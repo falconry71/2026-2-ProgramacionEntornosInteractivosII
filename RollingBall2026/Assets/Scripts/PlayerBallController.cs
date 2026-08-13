@@ -46,18 +46,25 @@ public class PlayerBallController : MonoBehaviour
 
     public void OnLaunch(InputAction.CallbackContext context)
     {
-        if(context.performed)
+        if (context.performed)
         {
             //(0, 1,0) * 100 -> (0, 100, 0)
-            if(Mathf.Abs(rb.linearVelocity.y) - 0.1f < 0)
+            if (Mathf.Abs(rb.linearVelocity.y) - 0.1f < 0)
             {
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             }
+
+            else if (Mathf.Abs(rb.linearVelocity.y) - 0.1f > 0)
+            {
+                rb.AddForce(Vector3.down * jumpForce, ForceMode.Impulse);
+
+
+            }
         }
-        //if(context.canceled)
-        //{
-        //}
-    }
+            //if(context.canceled)
+            //{
+            //}
+        }
 
 
     public IEnumerator Dash()
