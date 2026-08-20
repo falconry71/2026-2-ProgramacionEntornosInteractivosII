@@ -1,3 +1,5 @@
+using Unity.Hierarchy;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +13,23 @@ public class PlayerCharacterController : MonoBehaviour
     public float movementSpeed = 5f;
 
     public float jumpForce = 10f;
+
+    public float jumpCounter = 0f; 
+    private float jumpMult1 = 1.1f;
+    private float jumpMult2 = 1.2f;
+    
+    public float jumpTimeLimit = 0.3f;
+
+    public bool enSuelo = false;
+
+    
+    
+
+
+
+
+
+
 
     private Vector3 moveDirection;
 
@@ -31,6 +50,20 @@ public class PlayerCharacterController : MonoBehaviour
         verticalVelocity = new Vector3(0f, 0f, 0f);
     }
 
+
+    private void Update()
+    {
+        if (cc.isGrounded == true && !enSuelo)
+        {
+            enSuelo = true;
+            Debug.Log("en suelo");
+        }
+        else if (cc.isGrounded == false && enSuelo == true)
+        {
+            enSuelo = false;
+            Debug.Log("no en suelo");
+        }
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -46,6 +79,39 @@ public class PlayerCharacterController : MonoBehaviour
         
         //Movemos en ese componente XYZ
         cc.Move(newVelocity * Time.deltaTime);
+
+
+
+
+        if (enSuelo == true)
+        {
+            jumpTimeLimit -= Time.deltaTime;
+
+
+            
+
+            
+
+            
+
+        }
+
+        else if (enSuelo == false) 
+        {
+            jumpTimeLimit = 0.3f;
+
+        }
+
+        
+
+        if(jumpCounter > 2f || jumpTimeLimit < 0f)
+        {
+            jumpCounter = 0;
+        }
+
+        
+
+        
     }
 
 
@@ -59,7 +125,27 @@ public class PlayerCharacterController : MonoBehaviour
         if(context.performed && cc.isGrounded)
         {
             verticalVelocity.y = jumpForce;
+
+            jumpCounter++;
         }
+
+        if(jumpCounter == 1 && cc.isGrounded)
+        {
+            verticalVelocity.y = jumpForce * jumpMult1;
+        }
+        else if(jumpCounter == 2 && cc.isGrounded)
+        {
+            verticalVelocity.y = jumpForce * jumpMult2;
+        }
+
+       // funny setting xdxd 
+        if(context.canceled && jumpCounter == 0)
+        {
+            verticalVelocity.y = 0f; 
+        }
+       
+
+
 
     }
 
@@ -73,6 +159,12 @@ public class PlayerCharacterController : MonoBehaviour
             meshTransform.rotation = targetMeshRotation;
         }
     }
+
+
+
+    
+
+
 
 
 }
