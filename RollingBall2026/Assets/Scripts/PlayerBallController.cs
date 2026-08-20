@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +28,11 @@ public class PlayerBallController : MonoBehaviour
     public float dashForce = 3f;
     private bool isMaxSpeedLimitActive = true;
 
+    private bool enSuelo = false;
+    private float contadorSalto = 0f;
+
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -46,18 +52,26 @@ public class PlayerBallController : MonoBehaviour
 
     public void OnLaunch(InputAction.CallbackContext context)
     {
-        if(context.performed)
+        if (context.performed)
         {
             //(0, 1,0) * 100 -> (0, 100, 0)
-            if(Mathf.Abs(rb.linearVelocity.y) - 0.1f < 0)
+            if (Mathf.Abs(rb.linearVelocity.y) - 0.1f < 0)
             {
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+            }
+
+            else if (Mathf.Abs(rb.linearVelocity.y) - 0.1f > 0 )
+            {
+                rb.AddForce(Vector3.down * jumpForce, ForceMode.Impulse);
+
+                contadorSalto = 1f; 
             }
         }
-        //if(context.canceled)
-        //{
-        //}
-    }
+            //if(context.canceled)
+            //{
+            //}
+        }
 
 
     public IEnumerator Dash()
@@ -143,5 +157,18 @@ public class PlayerBallController : MonoBehaviour
         //Vector3 force = new Vector3(1f, 0f, 0f);
 
         //rb.AddForce(force);
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Suelo"))
+        {
+            enSuelo = true;
+
+           
+
+
+        }
     }
 }
